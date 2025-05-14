@@ -1,26 +1,30 @@
 <?php
+
+if (function_exists('date_default_timezone_set')) {
+    date_default_timezone_set('Asia/Jakarta');
+}
+
 require_once 'Configs/database.php';
 require_once 'Configs/helpers.php';
-require_once 'Controllers/TaskController.php';
+require_once 'Controllers/BukuTamuController.php';
 
-$taskController = new TaskController($conn);
+$bukuTamuController = new BukuTamuController($conn);
 
-$hasOperation = false;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create'])) {
-    $taskController->createTask($_POST['title'], $_POST['description']);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_tamu'])) {
+    $bukuTamuController->createTamu($_POST['nama'], $_POST['instansi'], $_POST['tujuan']);
+    header("Location: index.php");
+    exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
-    $taskController->updateTask($_POST['id'], $_POST['title'], $_POST['description'], $_POST['status']);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_tamu_id'])) {
+    $bukuTamuController->deleteTamu($_POST['delete_tamu_id']);
+    header("Location: index.php");
+    exit;
 }
 
-if (isset($_GET['delete'])) {
-    $taskController->deleteTask($_GET['delete']);
-}
-
-$result = $taskController->getAllTasks();
-$msg = $taskController->getMessage();
+$search = isset($_GET['search']) ? $_GET['search'] : null;
+$result = $bukuTamuController->getAllTamu($search);
+$msg = $bukuTamuController->getMessage();
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -31,63 +35,60 @@ require_once 'Layouts/header.php';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Management System | PWEB 2025 | UNIVERSITAS SIBER ASIA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Buku Tamu Digital | UNIVERSITAS SIBER ASIA - Ridwan Mubarok - 230401010053</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-50 h-screen overflow-y-hidden">
-    <div class="h-full flex flex-col">
-
-       <main class="py-10 h-[calc(100vh-160px)] pb-[50px]">
-            <div class="content-wrapper">
-                <div class="container mx-auto px-4 h-full">
-                    <?php if ($msg): ?>
-                        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4 rounded-lg shadow-sm transition-all duration-300" role="alert">
-                            <div class="flex items-center">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                <?php echo e($msg); ?>
-                            </div>
+<body class="bg-light min-vh-100 d-flex flex-column">
+    <div class="flex-grow-1">
+        <div class="container py-5">
+            <?php if ($msg): ?>
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <?php echo e($msg); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif; ?>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-light text-dark d-flex justify-content-between align-items-center">
+                            <div class="fw-bold"><i class="fas fa-list"></i> Daftar Tamu</div>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#addGuestModal">
+                                <i class="fas fa-plus"></i> Tambah Tamu
+                            </button>
                         </div>
-                    <?php endif; ?>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-                        <section class="bg-white p-4 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b">
-                                <i class="fas fa-plus-circle mr-2"></i>Add New Task
-                            </h3>
-                            <div class="scrollable-content">
-                                <?php require_once 'Components/add-task-form.php'; ?>
-                            </div>
-                        </section>
-
-                        <section class="bg-white p-4 rounded-lg shadow-md">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b">
-                                <i class="fas fa-tasks mr-2"></i>Task List
-                            </h3>
-                            <div class="scrollable-content">
-                                <?php require_once 'Components/task-list.php'; ?>
-                            </div>
-                        </section>
+                        <div class="card-body">
+                            <?php require_once 'Components/guest-list.php'; ?>
+                        </div>
                     </div>
                 </div>
             </div>
-        </main>
-
-        <?php require_once 'Layouts/footer.php'; ?>
+            <div class="modal fade" id="addGuestModal" tabindex="-1" aria-labelledby="addGuestModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="addGuestModalLabel"><i class="fas fa-book"></i> Form Buku Tamu
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <?php require_once 'Components/add-guest-form.php'; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script>
-        setTimeout(function () {
-            const msg = document.querySelector('[role="alert"]');
-            if (msg) {
-                msg.classList.add('opacity-0');
-                setTimeout(() => msg.style.display = 'none', 300);
-            }
-        }, 3000);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
+<?php require_once 'Layouts/footer.php'; ?>

@@ -1,15 +1,15 @@
-<header class="bg-white shadow-sm h-[80px] flex items-center">
-    <div class="container mx-auto px-4 max-w-9xl">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
+<header class="bg-primary shadow-sm py-3 mb-4">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-book fa-2x text-white"></i>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-800">Task Management System</h1>
-                    <p class="text-xs text-gray-600">PWEB 2025 | UNIVERSITAS SIBER ASIA</p>
+                    <h1 class="h4 fw-bold text-white mb-0">Buku Tamu Digital</h1>
+                    <p class="text-light mb-0" style="font-size: 0.9rem;">UNIVERSITAS SIBER ASIA</p>
                 </div>
             </div>
-            <div class="hidden md:block">
-                <div class="text-sm text-gray-600">
+            <div class="d-none d-md-block">
+                <div class="text-light small">
                     <?php echo date('l, d F Y'); ?>
                 </div>
             </div>
