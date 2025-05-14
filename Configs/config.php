@@ -17,19 +17,6 @@ if ($conn->query($sql) === TRUE) {
     die("Error creating database: " . $conn->error);
 }
 
-$sql = "CREATE TABLE IF NOT EXISTS tasks (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    status ENUM('pending', 'completed') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)";
-
-if (!$conn->query($sql)) {
-    die("Error creating table: " . $conn->error);
-}
-
 $sql = "CREATE TABLE IF NOT EXISTS buku_tamu (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     nama VARCHAR(255) NOT NULL,
@@ -42,4 +29,4 @@ $sql = "CREATE TABLE IF NOT EXISTS buku_tamu (
 if (!$conn->query($sql)) {
     die("Error creating table: " . $conn->error);
 }
-?> 
+?>
