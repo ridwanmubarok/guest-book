@@ -39,4 +39,12 @@ class BukuTamu {
         $stmt->close();
         return $success;
     }
+
+    public function update($id, $nama, $instansi, $tujuan) {
+        $stmt = $this->conn->prepare("UPDATE buku_tamu SET nama = ?, instansi = ?, tujuan = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $nama, $instansi, $tujuan, $id);
+        $success = $stmt->execute();
+        $stmt->close();
+        return $success;
+    }
 } 

@@ -22,6 +22,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_tamu_id'])) {
     exit;
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_tamu_id'])) {
+    $bukuTamuController->updateTamu(
+        $_POST['edit_tamu_id'],
+        $_POST['edit_nama'],
+        $_POST['edit_instansi'],
+        $_POST['edit_tujuan']
+    );
+    header("Location: index.php");
+    exit;
+}
+
 $search = isset($_GET['search']) ? $_GET['search'] : null;
 $result = $bukuTamuController->getAllTamu($search);
 $msg = $bukuTamuController->getMessage();

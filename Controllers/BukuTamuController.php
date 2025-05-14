@@ -82,4 +82,23 @@ class BukuTamuController
         $this->setMessage("Gagal menghapus data tamu.");
         return false;
     }
+
+    public function updateTamu($id, $nama, $instansi, $tujuan)
+    {
+        $data = $this->sanitizeInput([
+            'nama' => $nama,
+            'instansi' => $instansi,
+            'tujuan' => $tujuan
+        ]);
+        if (empty($data['nama']) || empty($data['instansi']) || empty($data['tujuan'])) {
+            $this->setMessage("Semua field wajib diisi.");
+            return false;
+        }
+        if ($this->bukuTamuModel->update($id, $data['nama'], $data['instansi'], $data['tujuan'])) {
+            $this->setMessage("Data tamu berhasil diupdate!");
+            return true;
+        }
+        $this->setMessage("Gagal mengupdate data tamu.");
+        return false;
+    }
 } 
